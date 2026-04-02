@@ -51,6 +51,7 @@ button:hover{
     font-size:30px;
     cursor:pointer;
     user-select:none;
+    transition: all 0.3s;
 }
 
 #carta{
@@ -71,18 +72,22 @@ button:hover{
 .final{
     display:none;
     position:fixed;
-    top:0;
-    left:0;
-    width:100vw;
-    height:100vh;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
     background:black;
     color:#ff4d6d;
     font-size:50px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    padding:40px;
+    border-radius:30px;
     z-index:9999;
     text-align:center;
+    animation: aparecerFinal 1s forwards;
+}
+
+@keyframes aparecerFinal{
+    0%{opacity:0; transform:translate(-50%, -60%) scale(0.5);}
+    100%{opacity:1; transform:translate(-50%, -50%) scale(1);}
 }
 </style>
 </head>
@@ -96,16 +101,9 @@ button:hover{
 
 <div id="carta">
 <p>
-mi niña, gracias por todo, YA PASARON 80 DIAS DE RELACION, UNA BANDA MI AMOR, gracias por quedarte en mi vida y hacerme super feliz, me dieron ganas de crear otro testo
-    porke si JAJAJA, enserio eres la persona que mas necesito en toda mi via y no quiero que nos volvamos a alejar, mis mejores recuerdos son literalmente contigo.
-    espero todo el dia para hacer llamada contigo o jugar, aunque este ahi haciendo nada igual me encanta escucharte, decirte decir cosas o hasta groserias PORKE TE VES
-    TAN TIERNA MI AMOR.
-    y no me gusta que te digas cosas malas, porque yo se muy bien que eres la niña mas hermosa de todo el universo entero, juro que eres la mujer mas bella, me encantatodo de vos.
-    me encanta tus actitudes, me encanta tus ojos, me encanta tus cachetes, tus hermosos labios, tu pelo que te queda tan bien, tu sentido del humor, tus chistes
-    tu acento, tu forma de bromear, tu estilo, tu forma de amara,  tu rostro, tu cuerpo, tu timidez, tu hiperactividad, tu sinceridad, cuando eres amable conmigo, cuando estas dormida
-    cuandoestas cariñosa, las veces en que te sientes segura, las veces en que me dices que te bañaste JAJAJAJ BROMI, tu forma de aguantarme, tu paciencia conmigo, los regalos que me haces
-    la forma en decirme las cosas, cuando eres tu, porque mi niña nadie te iguala, te quiero siempre para mi Y NUNCA TE DEJARE IRTE MI AMOR, PORQUE TE AMO CON TODA MI ALMA Y HARE TODO
-    LO POSIBLE PARA QUE TE QUEDES UWU, me sienti muy bien contigo, tengo toda la confianza y seguridad en ti mi amor, estoy demasiado orgulloso de tenerte en mi vida, PORQUE ERES TAN LINDA USHHH
+mi niña, gracias por todo, YA PASARON 80 DIAS DE RELACION, UNA BANDA MI AMOR, gracias por quedarte en mi vida y hacerme super feliz, me dieron ganas de crear otro testo porke si JAJAJA, enserio eres la persona que mas necesito en toda mi via y no quiero que nos volvamos a alejar, mis mejores recuerdos son literalmente contigo. espero todo el dia para hacer llamada contigo
+    o jugar, aunque este ahi haciendo nada igual me encanta escucharte, decirte decir cosas o hasta groserias PORKE TE VES TAN TIERNA MI AMOR. y no me gusta que te digas cosas malas, porque yo se muy bien que eres la niña mas hermosa de todo el universo entero, juro que eres la mujer mas bella, me encantatodo de vos. me encanta tus actitudes, me encanta tus ojos, me encanta tus cachetes, tus hermosos labios, tu pelo que te queda tan bien, tu sentido del humor, tus chistes tu acento, tu forma de bromear, tu estilo, tu forma de amara,  tu rostro, tu cuerpo, tu timidez, tu hiperactividad, tu sinceridad, cuando eres amable conmigo, cuando estas dormida cuandoestas cariñosa, las veces en que te sientes segura, las veces en que me dices que te bañaste JAJAJAJ BROMI, tu forma de aguantarme, tu paciencia conmigo, los regalos que me haces la 
+    forma en decirme las cosas, cuando eres tu, porque mi niña nadie te iguala, te quiero siempre para mi Y NUNCA TE DEJARE IRTE MI AMOR, PORQUE TE AMO CON TODA MI ALMA Y HARE TODO LO POSIBLE PARA QUE TE QUEDES UWU, me sienti muy bien contigo, tengo toda la confianza y seguridad en ti mi amor, estoy demasiado orgulloso de tenerte en mi vida, PORQUE ERES TAN LINDA USHH
 </p>
 <button onclick="cerrarCarta()">Cerrar</button>
 </div>
@@ -226,12 +224,11 @@ function crearCorazonJuego(){
 
 function terminarExplosion(){
     explosionActiva = false;
-    // Explosión de todo
+    // Explosión de todo sin desaparecer
     let todos = document.querySelectorAll("button, h1, #carta, .corazon");
     todos.forEach(el=>{
         el.style.transition = "all 0.5s";
-        el.style.transform = "rotate("+Math.random()*720+"deg) translate("+(Math.random()*100-50)+"px,"+(Math.random()*100-50)+"px) scale(2)";
-        el.style.opacity = "0";
+        el.style.transform = "rotate("+Math.random()*720+"deg) translate("+(Math.random()*100-50)+"px,"+(Math.random()*100-50)+"px) scale(1.5)";
     });
 
     // Terremoto
