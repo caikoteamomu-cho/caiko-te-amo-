@@ -230,13 +230,16 @@ function crearCorazon(){
     cor.style.cursor = "pointer";
     document.getElementById("minijuego").appendChild(cor);
 
+    let minijuego = document.getElementById("minijuego");
+    let maxTop = minijuego.clientHeight - 40; // altura máxima para que no se quede arriba
+
     let caida = setInterval(()=>{
         let top = parseInt(cor.style.top);
-        if(top >= 60){
+        if(top >= maxTop){
             cor.remove();
             clearInterval(caida);
         } else {
-            cor.style.top = top + 5 + "px";
+            cor.style.top = top + 5 + "px"; // velocidad de caída
         }
     },50);
 
