@@ -74,9 +74,41 @@ button:hover{
     animation: aparecer 0.5s;
 }
 
-@keyframes aparecer{
-    from{opacity:0; transform:translate(-50%,-60%);}
-    to{opacity:1; transform:translate(-50%,-50%);}
+#minijuego{
+    display:none;
+    position:fixed;
+    top:10%;
+    left:50%;
+    transform:translateX(-50%);
+    width:90%;
+    height:70vh;
+    border:3px dashed white;
+    border-radius:15px;
+    overflow:hidden;
+    background: rgba(255,255,255,0.1);
+}
+
+#canasta{
+    position:absolute;
+    bottom:10px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:50px;
+    user-select:none;
+}
+
+#puntaje{
+    position:absolute;
+    top:10px;
+    right:20px;
+    font-size:24px;
+    color:white;
+}
+
+@keyframes explotar{
+    0%{transform: scale(1);}
+    50%{transform: scale(2);}
+    100%{transform: scale(1);}
 }
 </style>
 </head>
@@ -87,20 +119,18 @@ button:hover{
 
 <button onclick="pregunta()">Apretame</button>
 <button onclick="abrirCarta()">Leer carta</button>
+<button onclick="iniciarJuego()">Jugamos?</button>
 
 <div id="carta">
 <p>
-mi niña, gracias por tanto que me ayudaste en mi vida, estoy tan contento que estes conmigo, me haces muy feliz amor,
-desde ese dia que te conocí juro que no lo olvidaré nunca mas en mi vida, me encanta que seas asi conmigo,
-tan linda bonita Y CARIÑOSA MI AMOR ERES MI FAVORITA GRACIAS POR HACERME EL CHICO MAS FELIZ DE TODO EL MUNDO MI AMOR,
-YA VAMOS BASTANTE TIEMPO EEEEEE, BAÑATE COCHINA JAJJAJAJAJ AY TE AMO TANTO MI AMOR AY NKSE QUE DIGA CALLATR UWUWUUW TR AML, ESTOY MUY ENAMORADO
-DE TI MI AMOR Y PERDON SI NO TE LO DIGO A VECES PERO ENSERIO ME SIENTO MUY ORGULLOSO DE TENERTE CONMIGO,eres una chica increíble,no hay nadie como tu
-tan atenta,preucupada,cariñosa, HERMOSA,alguien como tu que siempre me dice de jugar,matar rl aburrimiento,de estar conmigo,de mirar series,de pasar el rato 
-nosotros dos amor,me hace demasiado feliz,estare contigo toda mi vida,no te quiero dejar sola nunca,quiero hacerte feliz y sacarte todo ese aburrimiento.
-Gracias por ser mi novia y llenar de carisma siempre ai vida💗 VALORO TODO LO QUE HACES POR MI,TODAS LAS ACTITUDES,REGALOS,MIMITOS,TODO MI PRINCESA,TODO,GRACIAS POR TODO
-TE AMO UN MOGOLLÓN JAJAJAJAJAJAJJAJAAJAJAJJARJAJAJHAJAJ💗💗💗
+mi niña, gracias por tanto que me ayudaste en mi vida, estoy tan contento que estes conmigo...
 </p>
 <button onclick="cerrarCarta()">Cerrar</button>
+</div>
+
+<div id="minijuego">
+    <div id="puntaje">Puntos: 0</div>
+    <div id="canasta">🧺</div>
 </div>
 
 <audio autoplay loop>
@@ -108,10 +138,9 @@ TE AMO UN MOGOLLÓN JAJAJAJAJAJAJJAJAAJAJAJJARJAJAJHAJAJ💗💗💗
 </audio>
 
 <script>
-// BOTÓN “APRETAME” CON DOBLE ACEPTAR Y CRUZ
+// BOTÓN “APRETAME” CON CRUZ
 function pregunta(){
     let cuadro = document.createElement("div");
-
     cuadro.innerHTML = `
         <div style="position:relative;">
             <span onclick="cerrarPregunta()" 
@@ -136,9 +165,7 @@ function pregunta(){
             <button onclick="respuesta()">Aceptar</button>
         </div>
     `;
-
     cuadro.id = "preguntaBox";
-
     cuadro.style.position = "fixed";
     cuadro.style.top = "50%";
     cuadro.style.left = "50%";
@@ -149,15 +176,12 @@ function pregunta(){
     cuadro.style.borderRadius = "20px";
     cuadro.style.textAlign = "center";
     cuadro.style.boxShadow = "0 0 30px rgba(0,0,0,0.3)";
-
     document.body.appendChild(cuadro);
 }
 
 function cerrarPregunta(){
     let box = document.getElementById("preguntaBox");
-    if(box){
-        box.remove();
-    }
+    if(box) box.remove();
 }
 
 function respuesta(){
@@ -165,15 +189,10 @@ function respuesta(){
 }
 
 // CARTA
-function abrirCarta(){
-    document.getElementById("carta").style.display="block";
-}
+function abrirCarta(){ document.getElementById("carta").style.display="block"; }
+function cerrarCarta(){ document.getElementById("carta").style.display="none"; }
 
-function cerrarCarta(){
-    document.getElementById("carta").style.display="none";
-}
-
-// CORAZONES
+// CORAZONES FLOTA
 for(let i=0;i<40;i++){
     let corazon = document.createElement("div");
     corazon.innerHTML = "💖";
@@ -181,6 +200,101 @@ for(let i=0;i<40;i++){
     corazon.style.left = Math.random()*100 + "vw";
     corazon.style.animationDuration = (5 + Math.random()*5) + "s";
     document.body.appendChild(corazon);
+}
+
+// --------------------
+// MINI JUEGO CORAZÓN A LA CANASTA
+// --------------------
+let puntos = 0;
+let juegoActivo = false;
+let intervalCorazones;
+
+function iniciarJuego(){
+    puntos = 0;
+    document.getElementById("puntaje").innerText = "Puntos: 0";
+    document.getElementById("minijuego").style.display = "block";
+    juegoActivo = true;
+    crearCorazon();
+    intervalCorazones = setInterval(crearCorazon, 1500);
+    moverCanasta();
+}
+
+function crearCorazon(){
+    if(!juegoActivo) return;
+    let cor = document.createElement("div");
+    cor.innerText = "💖";
+    cor.style.position = "absolute";
+    cor.style.left = Math.random()*80 + "%";
+    cor.style.top = "-50px";
+    cor.style.fontSize = "30px";
+    cor.style.cursor = "pointer";
+    document.getElementById("minijuego").appendChild(cor);
+
+    let caida = setInterval(()=>{
+        let top = parseInt(cor.style.top);
+        if(top >= 60){
+            cor.remove();
+            clearInterval(caida);
+        } else {
+            cor.style.top = top + 5 + "px";
+        }
+    },50);
+
+    cor.addEventListener("click", ()=>{
+        cor.remove();
+        clearInterval(caida);
+        sumarPunto();
+    });
+}
+
+function sumarPunto(){
+    puntos++;
+    document.getElementById("puntaje").innerText = "Puntos: " + puntos;
+    if(puntos >= 3){
+        terminarJuego();
+    }
+}
+
+// CANASTA sigue el mouse
+function moverCanasta(){
+    let canasta = document.getElementById("canasta");
+    document.getElementById("minijuego").addEventListener("mousemove",(e)=>{
+        let rect = e.currentTarget.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        canasta.style.left = x + "px";
+    });
+}
+
+function terminarJuego(){
+    juegoActivo = false;
+    clearInterval(intervalCorazones);
+    // Explosión de corazones
+    for(let i=0;i<50;i++){
+        let cor = document.createElement("div");
+        cor.innerText = "💥";
+        cor.style.position = "absolute";
+        cor.style.left = Math.random()*90 + "%";
+        cor.style.top = Math.random()*60 + "%";
+        cor.style.fontSize = "30px";
+        cor.style.animation = "explotar 0.5s linear";
+        document.getElementById("minijuego").appendChild(cor);
+        setTimeout(()=>cor.remove(),1000);
+    }
+    // Terremoto
+    let body = document.body;
+    let t=0;
+    let terremoto = setInterval(()=>{
+        let x = Math.random()*10-5;
+        let y = Math.random()*10-5;
+        body.style.transform = `translate(${x}px,${y}px)`;
+        t++;
+        if(t>15){
+            clearInterval(terremoto);
+            body.style.transform = "translate(0,0)";
+            alert("27 PUNTOS OBTENIDOS 💖🎉");
+            document.getElementById("minijuego").style.display="none";
+        }
+    },50);
 }
 </script>
 
